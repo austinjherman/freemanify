@@ -16,7 +16,18 @@ mapToEven = mapToN 2 0
 freemanify :: String -> String
 freemanify = (mapToOdd toLower) . (mapToEven toUpper)
 
+getFlags :: [String] -> [String]
+getFlags strs = [x | x <- strs, take 2 x == "--"]
+
+stripFlags :: [String] -> [String]
+stripFlags strs = [ x | x <- strs, take 2 x /= "--"]
+
+emoify :: String -> String
+emoify str = "xXx " ++ str ++ " xXx"
+
 
 main = do
   input <- getArgs
-  mapM (putStrLn . freemanify) input
+  case (elem "--emo" . getFlags) input of
+    True -> mapM (putStrLn . emoify . freemanify) (stripFlags input)
+    False -> mapM (putStrLn . freemanify) (stripFlags input)
